@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  auth_server:
+    image: my_php
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./auth_server:/app
+      - /mnt/c/www/db/:/app/db
+    command: php -S 0.0.0.0:8080 -t public
+
+  client:
+    image: my_php
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./client:/app
+    command: php -S 0.0.0.0:8081 -t public

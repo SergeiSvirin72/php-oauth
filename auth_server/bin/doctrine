@@ -1,0 +1,50 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use App\Command\LoadFixturesCommand;
+use Doctrine\Migrations\Configuration\EntityManager\ExistingEntityManager;
+use Doctrine\Migrations\Configuration\Migration\PhpFile;
+use Doctrine\Migrations\DependencyFactory;
+use Doctrine\Migrations\Tools\Console\Command;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\Console\ConsoleRunner;
+use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
+use Psr\Container\ContainerInterface;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+/** @var ContainerInterface $container */
+$container = require __DIR__ . '/../config/container.php';
+
+/** @var EntityManagerInterface $entityManager */
+$entityManager = $container->get(EntityManagerInterface::class);
+
+// Migrations
+$config = new PhpFile(__DIR__ . '/../config/migrations.php');
+
+$dependencyFactory = DependencyFactory::fromEntityManager($config, new ExistingEntityManager($entityManager));
+
+$commands = [
+    // Migrations
+    new Command\CurrentCommand($dependencyFactory),
+    new Command\DiffCommand($dependencyFactory),
+    new Command\DumpSchemaCommand($dependencyFactory),
+    new Command\ExecuteCommand($dependencyFactory),
+    new Command\GenerateCommand($dependencyFactory),
+    new Command\LatestCommand($dependencyFactory),
+    new Command\ListCommand($dependencyFactory),
+    new Command\MigrateCommand($dependencyFactory),
+    new Command\RollupCommand($dependencyFactory),
+    new Command\StatusCommand($dependencyFactory),
+    new Command\SyncMetadataCommand($dependencyFactory),
+    new Command\UpToDateCommand($dependencyFactory),
+    new Command\VersionCommand($dependencyFactory),
+
+    //Fixtures
+    new LoadFixturesCommand($entityManager),
+];
+
+// ORM
+ConsoleRunner::run(new SingleManagerProvider($entityManager), $commands);

@@ -1,0 +1,18 @@
+{
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.1",
+        "ext-curl": "*",
+        "php-di/php-di": "^7.0",
+        "slim/php-view": "^3.2",
+        "slim/psr7": "^1.6",
+        "slim/slim": "4.*"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
